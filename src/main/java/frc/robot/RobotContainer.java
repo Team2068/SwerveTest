@@ -11,6 +11,7 @@ import java.io.File;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -29,6 +30,9 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    drivebase.setMotorBrake(true) ;
+    configureBindings();
+    
     AbsoluteDriveAdv closedAbsoluteDriveAdv = new AbsoluteDriveAdv(drivebase,
         () -> -MathUtil.applyDeadband(driverXbox.getLeftY(),
             OperatorConstants.LEFT_Y_DEADBAND),
@@ -52,6 +56,8 @@ public class RobotContainer {
         () -> MathUtil.applyDeadband(driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
         () -> driverXbox.getRightX() * 0.5);
 
+        drivebase.setDefaultCommand(
+        !RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedAnglularVelocity);
   }
 
   private void configureBindings() {
